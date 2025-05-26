@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Smiling Animation</title>
+  <style>
+    body {
+      margin: 0;
+      background: #0d0d0d;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      font-family: 'Courier New', monospace;
+      padding-left: 5vw;
+      position: relative;
+      transition: opacity 1s linear;
+    }
+
+    .line {
+      display: flex;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+      font-size: 7vw;
+      color: #0ff;
+      text-shadow: 0 0 10px #0ff, 0 0 20px #0ff;
+    }
+
+    .letter {
+      opacity: 0;
+      transform: translateY(50vh);
+      animation: assemble 0.8s ease-out forwards;
+    }
+
+    .space {
+      width: 1ch;
+    }
+
+    @keyframes assemble {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .emoji {
+      font-size: 8vw;
+      opacity: 0;
+      animation: zoomIn 1.5s ease-out 4s forwards;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    @keyframes zoomIn {
+      0% {
+        opacity: 0;
+        transform: scale(0);
+      }
+      70% {
+        opacity: 1;
+        transform: scale(2.5);
+      }
+      100% {
+        transform: scale(0);
+        opacity: 0;
+      }
+    }
+
+    .heart {
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      background: pink;
+      transform: rotate(45deg);
+      animation: float 3s linear forwards;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      background: pink;
+      border-radius: 50%;
+    }
+
+    .heart::before {
+      top: -7px;
+      left: 0;
+    }
+
+    .heart::after {
+      left: -7px;
+      top: 0;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) scale(1) rotate(45deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-100vh) scale(1.5) rotate(45deg);
+        opacity: 0;
+      }
+    }
+
+    .falling {
+      position: absolute;
+      top: -50px;
+      font-size: 24px;
+      animation: fall linear forwards;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(110vh);
+        opacity: 0;
+      }
+    }
+
+    .highlight {
+      color: red;
+      font-weight: bold;
+      font-family: 'Arial Black', sans-serif;
+      font-size: 6vw;
+    }
+
+    #countdown {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: white;
+      font-size: 5vw;
+      text-align: center;
+    }
+
+    #finalMessage {
+      display: none;
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      color: white;
+      font-size: 6vw;
+      text-align: center;
+    }
+
+    #exitButton {
+      display: none;
+      margin-top: 30px;
+      padding: 15px 30px;
+      font-size: 5vw;
+      background-color: red;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    #fadeContent {
+      transition: opacity 1s linear;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="fadeContent">
+    <div class="line" id="line1"></div>
+    <div class="line" id="line2"></div>
+    <div class="emoji" id="emoji">🔥</div>
+  </div>
+
+  <div id="countdown">FADING IN 10</div>
+
+  <div id="finalMessage">
+    NOW U CAN GO HELL OUT OF HERE !!
+    <br>
+    <button id="exitButton">EXIT</button>
+  </div>
+
+  <script>
+    function showLine(text, id, delayStart) {
+      const line = document.getElementById(id);
+      [...text].forEach((char, index) => {
+        const span = document.createElement('span');
+        if (char === ' ') {
+          span.className = 'space';
+          span.innerHTML = '&nbsp;';
+        } else {
+          span.className = 'letter';
+          span.textContent = char;
+          span.style.animationDelay = `${delayStart + index * 0.05}s`;
+        }
+        line.appendChild(span);
+      });
+    }
+
+    function explodeHearts() {
+      for (let i = 0; i < 60; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'heart';
+        heart.style.left = `${window.innerWidth / 2 + (Math.random() - 0.5) * 200}px`;
+        heart.style.top = `${window.innerHeight / 2 + (Math.random() - 0.5) * 100}px`;
+        heart.style.animationDelay = `${Math.random()}s`;
+        document.body.appendChild(heart);
+        setTimeout(() => heart.remove(), 3000);
+      }
+    }
+
+    function createFallingEmojis() {
+      const emojis = ['🔥', '🔥'];
+      setInterval(() => {
+        const emoji = document.createElement('div');
+        emoji.className = 'falling';
+        emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        emoji.style.left = Math.random() * window.innerWidth + 'px';
+        emoji.style.animationDuration = 2 + Math.random() * 2 + 's';
+        document.body.appendChild(emoji);
+        setTimeout(() => emoji.remove(), 5000);
+      }, 200);
+    }
+
+    showLine("LISTEN CLOSELY_EVEN IF U ARE MY ENEMY -", "line1", 0);
+
+    const secondLineText = 'YOU HAVE TO LIVE A LONG LIFE TO SEE MY SUCCESS         - HEMRAZ';
+    const line2 = document.getElementById("line2");
+
+    [...secondLineText].forEach((char, index) => {
+      const span = document.createElement('span');
+      if (char === ' ') {
+        span.className = 'space';
+        span.innerHTML = '&nbsp;';
+      } else {
+        span.className = 'letter';
+        span.textContent = char;
+        span.style.animationDelay = `${1.5 + index * 0.05}s`;
+        if (index <= 47) {
+          span.classList.add("highlight");
+        }
+      }
+      line2.appendChild(span);
+    });
+
+    setTimeout(() => {
+      document.getElementById('emoji').style.display = 'block';
+    }, 4000);
+
+    setTimeout(explodeHearts, 5500);
+    setTimeout(createFallingEmojis, 6000);
+
+    let countdown = 15;
+    const countdownEl = document.getElementById("countdown");
+
+    const countdownInterval = setInterval(() => {
+      countdown--;
+      countdownEl.textContent = `FADING IN ${countdown}`;
+      if (countdown <= 0) {
+        clearInterval(countdownInterval);
+        document.getElementById("fadeContent").style.opacity = 0;
+        countdownEl.style.display = 'none';
+        setTimeout(() => {
+          const finalMsg = document.getElementById("finalMessage");
+          finalMsg.style.display = "block";
+          document.getElementById("exitButton").style.display = "inline-block";
+        }, 1000);
+      }
+    }, 1000);
+
+    document.getElementById("exitButton").addEventListener("click", function() {
+      window.location.href = "https://www.facebook.com/";
+    });
+  </script>
+
+</body>
+</html>
